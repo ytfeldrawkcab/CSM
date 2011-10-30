@@ -3,4 +3,5 @@
 *.pyc
 *.py~
 *.html~
+.gitignore~
 sqlite3.db

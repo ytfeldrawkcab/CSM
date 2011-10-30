@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+        <meta http-equiv="Content-Script-Type" content="application/javascript">
+
+        <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css">
+
+        {% block extrahead %}{% endblock %}
+
+    </head>
+    <body>
+        <div class='content'>
+            {% block content %}{% endblock %}
+        </div>
+        <div class='sidebar'>
+            {% block sidebar %}{% endblock %}
+        </div>
+    </body>
+</html>

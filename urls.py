@@ -14,4 +14,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    (r'^owners/login/$', 'django.contrib.auth.views.login'),
+
+    # Customers
+    (r'^owners/(?P<ownerid>\d+)/edit/$', 'csm.views.editowner'),
+    (r'^owners/add/$', 'csm.views.editowner'),
+    (r'^owners/addindividual/$', 'csm.views.addindividual'),
 )

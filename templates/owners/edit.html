@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block extrahead %}{{ block.super }}
+    <script type='application/javascript'>   
+        function addindividual(){
+            var prefix = parseInt($('#id_individualcount').val()) + 1;
+            $.get('/owners/addindividual/', {'prefix':prefix}, function(data){
+                $('#individuals').append(data);
+                $('#id_individualcount').val(prefix);
+            });
+        }
+    </script>
+    
+    <style type='text/css'>
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="">
+    {% csrf_token %}
+        <fieldset>
+            <legend>Owner Information</legend>
+            Owner Number: {{ form.username }}
+            {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+        </fieldset>
+        
+        <fieldset>
+            <legend>
+                Individuals <input type='button' value='+' onClick='addindividual()'/>
+            </legend>
+            <table id='individuals'>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                </tr>
+                {% for individualform in individualforms %}
+                    {% include 'owners/individual.html' %}
+                {% endfor %}
+            </table>
+        </fieldset>
+        
+        <input type='submit' value='submit'/>
+    </form>
+{% endblock %}
+
+{% block sidebar %}
+
+{% endblock %}
