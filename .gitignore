@@ -1,4 +1,6 @@
 *.bak
 *.swp
 *.pyc
+*.py~
+*.html~
 sqlite3.db
