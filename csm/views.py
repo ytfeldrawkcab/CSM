@@ -3,10 +3,11 @@ from csm.forms import *
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.core.exceptions import ObjectDoesNotExist
 
 #public functions           
 def findparentinstance(parentforms, lookupprefix):
@@ -21,7 +22,17 @@ def findparentprefix(parentforms, lookupinstance):
             return parentform.prefix
 
 #owner management
+@login_required
 def editowner(request, ownerid=None):
+    try:
+        if request.user.owner and ownerid == None:
+            ownerid = request.user.owner.username
+        elif request.user.owner and ownerid != request.user.owner.username:
+            return HttpResponse("You can't view this owner's details.")
+        admin = False
+    except ObjectDoesNotExist:
+        admin = True
+    
     if request.method == 'GET':
         if ownerid:
             owner = Owner.objects.get(username=ownerid)
@@ -36,7 +47,17 @@ def editowner(request, ownerid=None):
             individualform = IndividualForm(instance=individual, prefix='i'+str(i))
             individualforms.append(individualform)
         
-        ownerform = OwnerForm(instance=owner, initial={'individualcount':i})
+        if admin == True:
+            ownerform = OwnerMasterForm(instance=owner, initial={'individualcount':i})
+        else:
+            ownerform = OwnerEditForm(instance=owner, initial={'individualcount':i})
+            ownerform.username = owner.username
+            ownerform.ownertype = owner.ownertype
+            
+        if owner:
+            ownerform.officialcontactprefix = findparentprefix(individualforms, owner.officialcontact)
+            if owner.ownertype.pk == 2 and i > 0:
+                ownerform.maxindividuals = 1
         
         return render_to_response('owners/edit.html', RequestContext(request, {'form':ownerform, 'individualforms':individualforms}))
     else:
@@ -44,7 +65,23 @@ def editowner(request, ownerid=None):
         individualcount = request.POST['individualcount']
         individualforms = []
         
-        ownerform = OwnerForm(request.POST)
+        try:
+            request.user.owner
+            admin = False
+            print 'test'
+        except ObjectDoesNotExist:
+            admin = True
+        
+        if admin == True:
+            ownerform = OwnerMasterForm(request.POST)
+        else:
+            owner = Owner.objects.get(pk=request.POST['pk'])
+            ownerform = OwnerEditForm(request.POST)
+            ownerform.username = owner.username
+            ownerform.ownertype = owner.ownertype
+            
+        if 'officialcontactprefix' in request.POST:
+            ownerform.officialcontactprefix = request.POST['officialcontactprefix']
         if not ownerform.is_valid():
             passedvalidation = False
             
@@ -53,6 +90,15 @@ def editowner(request, ownerid=None):
             individualforms.append(individualform)
             if not individualform.is_valid():
                 passedvalidation = False
+        
+        if admin == True:
+            ownertype = request.POST['ownertype']
+        if admin == False:
+            ownertype = owner.ownertype.pk
+            
+        if int(individualcount) > 1 and str(ownertype) == str(2):
+            passedvalidation = False
+            ownerform.customerror = "An individual owner share can only have one individual associated with the account"
             
         if passedvalidation == False:
             return render_to_response('owners/edit.html', RequestContext(request, {'form':ownerform, 'individualforms':individualforms}))
@@ -68,11 +114,20 @@ def editowner(request, ownerid=None):
                 elif individual.pk:
                     individual.delete()
             
-            #set official contact here and then save     
-            #owner.save()
+            #set official contact here and then save    
+            if 'officialcontactprefix' in request.POST:
+                owner.officialcontact = findparentinstance(individualforms, request.POST['officialcontactprefix'])
+            else:
+                individuals = Individual.objects.filter(owner=owner)
+                if individuals:
+                    owner.officialcontact = individuals[0]
+                else:
+                    owner.officialcontact = None
+            owner.save()
             
             return HttpResponseRedirect('/owners/' + str(owner.username) + '/edit/')
-            
+
+@login_required
 def addindividual(request):
     prefix = request.GET['prefix']
     individualform = IndividualForm(prefix='i'+str(prefix))

@@ -145,3 +145,5 @@ LOGGING = {
         },
     }
 }
+
+LOGIN_URL = '/owners/login/'

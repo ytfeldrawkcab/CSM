@@ -1,4 +1,5 @@
 <tr id='{{ individualform.prefix }}' class='{{ individualform.prefix }}'>
+    <td class='aligncenter'><input type='radio' name='officialcontactprefix' id='id_officialcontactprefix{{ individualform.prefix }}' value='{{ individualform.prefix }}' {% if form.officialcontactprefix == individualform.prefix %}checked{% endif %}/>
     <td>{{ individualform.firstname }}</td>
     <td>{{ individualform.lastname }}</td>
     <td>{{ individualform.phone }}</td>

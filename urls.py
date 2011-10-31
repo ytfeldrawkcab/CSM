@@ -14,9 +14,17 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    
+    # Authentication
     (r'^owners/login/$', 'django.contrib.auth.views.login'),
+    (r'^owners/changepassword/$', 'django.contrib.auth.views.password_change'),
+    (r'^owners/changepassworddone/$', 'django.contrib.auth.views.password_change_done'),
+    (r'^owners/resetpassword/$', 'django.contrib.auth.views.password_reset'),
+    (r'^owners/resetpassworddone/$', 'django.contrib.auth.views.password_reset_done'),
+    (r'^owners/resetpasswordconfirm/$', 'django.contrib.auth.views.password_reset_confirm'),
 
-    # Customers
+    # Owners
+    (r'^owners/home/$', 'csm.views.editowner'),
     (r'^owners/(?P<ownerid>\d+)/edit/$', 'csm.views.editowner'),
     (r'^owners/add/$', 'csm.views.editowner'),
     (r'^owners/addindividual/$', 'csm.views.addindividual'),

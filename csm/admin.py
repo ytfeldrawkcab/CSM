@@ -10,3 +10,4 @@ class OwnerAdmin(admin.ModelAdmin):
     inlines = [IndividualInline]
 
 admin.site.register(Owner, OwnerAdmin)
+admin.site.register(OwnerType)

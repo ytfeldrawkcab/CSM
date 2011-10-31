@@ -269,39 +269,12 @@ fieldset fieldset legend{
     font-style: italic;
 }
 
-fieldset.collapsed{
-    border-width: 1px 0px 0px 0px;
-    background-color: transparent;
-    background-image: url('')
-}
-fieldset.collapsed > *:not(legend){
-    display: none !important;
-}
-fieldset legend{
-    padding-left: 15px;
-    position: relative;
-}
+
 fieldset.collapsed legend{
     margin-left: 2px;
 }
 fieldset fieldset.collapsed legend{
     margin-left: 1px;
-}
-
-fieldset legend .toggle{
-    background-image: url('/static/common/images/collapse.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 1px;
-    width: 15px;
-    cursor: pointer;
-}
-
-fieldset.collapsed legend .toggle{
-    background-image: url('/static/common/images/expand.png');
 }
 
 .ui-tabs legend{

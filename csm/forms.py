@@ -44,15 +44,24 @@ class AutoInstanceModelForm(forms.ModelForm):
         for f in self.fields:
             self.fields[f] = auto_error_class(self.fields[f])
 
-#customer management forms
-class OwnerForm(AutoInstanceModelForm):
+#owner management forms
+class OwnerMasterForm(AutoInstanceModelForm):
     class Meta:
         model = Owner
-        fields = ('username',)
+        fields = ('username','ownertype','paperless')
     def __init__(self, *args, **kwargs):
-        super(OwnerForm, self).__init__(*args, **kwargs)
+        super(OwnerMasterForm, self).__init__(*args, **kwargs)
         self.fields['individualcount'] = forms.IntegerField(initial=0, widget=forms.HiddenInput())
-        self.fields['officialcontactprefix'] = forms.CharField(required=False, widget=forms.TextInput(attrs={'class':'mainicon icon contacticon', 'readonly':'readonly'}))
+        for f in self.fields:
+            self.fields[f] = auto_error_class(self.fields[f])
+
+class OwnerEditForm(AutoInstanceModelForm):
+    class Meta:
+        model = Owner
+        fields = ('paperless',)
+    def __init__(self, *args, **kwargs):
+        super(OwnerEditForm, self).__init__(*args, **kwargs)
+        self.fields['individualcount'] = forms.IntegerField(initial=0, widget=forms.HiddenInput())
         for f in self.fields:
             self.fields[f] = auto_error_class(self.fields[f])
 

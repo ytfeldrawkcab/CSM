@@ -9,6 +9,13 @@
                 $('#id_individualcount').val(prefix);
             });
         }
+        function deleteitem(prefix){
+            $('#id_' + prefix + '-delete').val('1');
+            $('.' + prefix).hide();
+            if($('#id_officialcontactprefix' + prefix).attr('checked')=='checked'){
+                $('input:radio[name=officialcontactprefix]:visible:first').attr('checked', true);
+            }
+        }
     </script>
     
     <style type='text/css'>
@@ -21,16 +28,21 @@
     {% csrf_token %}
         <fieldset>
             <legend>Owner Information</legend>
-            Owner Number: {{ form.username }}
+            Owner Number: {{ form.username }}<br/>
+            Change Password: <a href='/owners/changepassword'>click here</a><br/>
+            Ownership Type: {{ form.ownertype }}<br/>
+            Paperless: {{ form.paperless }} Check this box to receive official communication via email instead of snail mail.  This saves the co-op money on postage and printing!
             {% for field in form.hidden_fields %}{{ field }}{% endfor %}
         </fieldset>
         
         <fieldset>
             <legend>
-                Individuals <input type='button' value='+' onClick='addindividual()'/>
+                Individuals <input type='button' value='+' onClick='addindividual()' {% if form.maxindividuals %}disabled{% endif %}/>
             </legend>
+            {{ form.customerror }}
             <table id='individuals'>
                 <tr>
+                    <th>Official<br/>Contact</th>
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Phone</th>
