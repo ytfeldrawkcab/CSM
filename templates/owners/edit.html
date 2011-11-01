@@ -24,37 +24,76 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" action="">
+    <form class='form-stacked' method="post" action="">
     {% csrf_token %}
+        <div class="page-header">
+            <h1>Owner Details</h1>
+        </div>
         <fieldset>
-            <legend>Owner Information</legend>
-            Owner Number: {{ form.username }}<br/>
-            Change Password: <a href='/owners/changepassword'>click here</a><br/>
-            Ownership Type: {{ form.ownertype }}<br/>
-            Paperless: {{ form.paperless }} Check this box to receive official communication via email instead of snail mail.  This saves the co-op money on postage and printing!
+            <div class="clearfix">
+                <label>Owner Number:</label>
+                <div class="input">
+                    {{ form.username }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>
+                    Ownership Type:
+                </label>
+                <div class="input">
+                    {{ form.ownertype }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>Change Password:</label>
+                <div class="input">
+                    <div class='inputs-list'>
+                        <a href='/owners/changepassword'>click here</a> to change your password<br/>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>Paperless:</label>
+                <div class="input">
+                    <ul class="inputs-list">
+                        <li>
+                          <label>
+                            {{ form.paperless }}
+                            <span>Check this box to receive official communication via email instead of snail mail.  This saves the co-op money on postage and printing!</span>
+                          </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             {% for field in form.hidden_fields %}{{ field }}{% endfor %}
         </fieldset>
-        
+        <div class="page-header">
+            <h1>Individuals <input type='button' value='+' onClick='addindividual()' {% if form.maxindividuals %}disabled{% endif %}/></h1>
+        </div>
         <fieldset>
-            <legend>
-                Individuals <input type='button' value='+' onClick='addindividual()' {% if form.maxindividuals %}disabled{% endif %}/>
-            </legend>
-            {{ form.customerror }}
+            {% if form.customerror %}
+                <div class="alert-message error">
+                    <p>{{ form.customerror }}</p>
+                </div>
+            {% endif %}
             <table id='individuals'>
-                <tr>
-                    <th>Official<br/>Contact</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>Official<br/>Contact</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
                 {% for individualform in individualforms %}
                     {% include 'owners/individual.html' %}
                 {% endfor %}
             </table>
         </fieldset>
-        
-        <input type='submit' value='submit'/>
+        <div class="actions">
+            <input type='submit' value='submit'/>
+        </div>
     </form>
 {% endblock %}
 

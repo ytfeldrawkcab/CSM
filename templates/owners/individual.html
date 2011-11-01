@@ -5,7 +5,7 @@
     <td>{{ individualform.phone }}</td>
     <td>{{ individualform.email }}</td>
     <td>
-        <input type='button' class='delete' onClick="deleteitem('{{ individualform.prefix }}')"/></legend>
+        <input type='button' class='delete close' value='x' onClick="deleteitem('{{ individualform.prefix }}')"/></legend>
         {% for field in individualform.hidden_fields %}{{ field }}{% endfor %}
     </td>
 </tr>

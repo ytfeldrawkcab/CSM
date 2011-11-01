@@ -4,7 +4,7 @@ from django.core import exceptions
 from csm.models import *
 import types
 
-def auto_error_class(field, error_class="error"):
+def auto_error_class(field, error_class="alert-message error"):
     """
        Monkey-patch a Field instance at runtime in order to automatically add a CSS
        class to its widget when validation fails and provide any associated error

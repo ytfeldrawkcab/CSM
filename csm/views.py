@@ -37,7 +37,7 @@ def selecthome(request):
         request.user.owner
         return editowner(request)
     except ObjectDoesNotExist:
-        return HttpResponseRedirect('http://companyshopsmarket.coop')
+        return HttpResponseRedirect('/owners/')
 
 #owner management
 @login_required
