@@ -21,6 +21,24 @@ def findparentprefix(parentforms, lookupinstance):
         if parentform.instance == lookupinstance:
             return parentform.prefix
 
+def searchcriteria(GET):
+    if 'searchfield' in GET:
+        querystring = GET['querystring']
+        searchfield = GET['searchfield']
+    else:
+        querystring = ''
+        searchfield = ''
+    return (querystring, searchfield)
+
+#home selection based on usertype
+@login_required
+def selecthome(request):
+    try:
+        request.user.owner
+        return editowner(request)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('http://companyshopsmarket.coop')
+
 #owner management
 @login_required
 def editowner(request, ownerid=None):
@@ -133,3 +151,19 @@ def addindividual(request):
     individualform = IndividualForm(prefix='i'+str(prefix))
     
     return render_to_response('owners/individual.html', {'individualform':individualform})
+
+@login_required
+def ownersearch(request):
+    querystring, searchfield = searchcriteria(request.GET)
+    
+    if searchfield == 'number':
+        query = Q(username=querystring)
+    elif searchfield == 'contact':
+        query = Q(officialcontact__firstname__contains=querystring) | Q(officialcontact__lastname__contains=querystring)
+    else:
+        query = Q()
+        
+    owners = Owner.objects.filter(query)
+
+    form = OwnerSearchForm(initial={'searchfield':searchfield, 'querystring':querystring})
+    return render_to_response('owners/search.html', {'owners':owners, 'form':form})

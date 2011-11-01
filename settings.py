@@ -147,3 +147,12 @@ LOGGING = {
 }
 
 LOGIN_URL = '/owners/login/'
+LOGIN_REDIRECT_URL = '/owners/home/'
+LOGOUT_REDIRECT_URL = '/'
+
+#email stuff
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'eric.r.michel@gmail.com'
+EMAIL_HOST_PASSWORD = 'hkaua34'
+EMAIL_PORT = 587

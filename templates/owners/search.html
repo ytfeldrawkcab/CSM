@@ -1,0 +1,22 @@
+{% extends "search.html" %}
+
+{% block results %}
+{% if owners %}
+  <table>
+    <thead>
+        <tr>
+            <th>Owner<br/>Number</th>
+            <th>Official<br/>Contact</th>
+        </tr>
+    </thead>
+    {% for owner in owners %}
+    <tr>
+        <td><a href='/owners/{{ owner.username }}/edit/'>{{ owner.username }}</a></td>
+        <td>{{ owner.officialcontact }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% else %}
+  <p>No owners found</p>
+{% endif %}
+{% endblock %}

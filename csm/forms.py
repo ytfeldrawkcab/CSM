@@ -69,3 +69,14 @@ class IndividualForm(AutoInstanceModelForm):
     class Meta:
         model = Individual
         exclude = ('owner',)
+
+#search forms
+class SearchForm(forms.Form):
+    searchfield = forms.ChoiceField(label='Search By')
+    querystring = forms.CharField(label='Criteria', max_length=200)
+    def __init__(self, *args, **kwargs):
+        super(SearchForm, self).__init__(*args, **kwargs)
+        self.fields['searchfield'].choices = self.choices
+        
+class OwnerSearchForm(SearchForm):
+    choices = [('number','Owner Number'),('contact','Official Contact')]

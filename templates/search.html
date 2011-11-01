@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="get" action="">
+{% for field in form %}
+    <div class="clearfix">
+        <label>
+            {{ field.label }}
+        </label>
+        <div class="input">
+            {{ field }}
+        </div>
+    </div>
+{% endfor %}
+<div class="actions">
+<input type="submit" class="btn primary" value="Search">
+</div>
+</form>
+
+<h2>Results:</h2>
+
+{% block results %}{% endblock %}
+{% endblock %}
