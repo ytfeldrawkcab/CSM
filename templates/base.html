@@ -15,12 +15,24 @@
     <body>
         <div class="container-fluid">
             <div class='sidebar'>
-                <h3>Owners</h3>
+                <h3>Menu</h3>
                 <ul>
-                    <li><a href='/owners/search/'>Search for an owner</a></li>
-                    <li><a href='/owners/add/'>Add a new Owner</a></li>
+                    <li><a href='/owners/'>Home</a></li>
+                    <li><a href='/owners/logout'>Logout</a></li>
                 </ul>
-                <h3>Polls/Elections</h3>
+                {% if user.is_staff and not user.owner %}
+                    <h5>Owners</h5>
+                    <ul>
+                        <li><a href='/owners/search/'>Search for an owner</a></li>
+                        <li><a href='/owners/add/'>Add a New Owner</a></li>
+                    </ul>
+                    
+                    <h5>Elections</h5>
+                    <ul>
+                        <li><a href='/elections/list/'>List Elections</a></li>
+                        <li><a href='/elections/add/'>Add a New Election</a></li>
+                    </ul>
+                {% endif %}
                 {% block sidebar %}{% endblock %}
             </div>
             <div class='content'>

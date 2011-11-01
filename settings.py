@@ -147,7 +147,7 @@ LOGGING = {
 }
 
 LOGIN_URL = '/owners/login/'
-LOGIN_REDIRECT_URL = '/owners/home/'
+LOGIN_REDIRECT_URL = '/owners/'
 LOGOUT_REDIRECT_URL = '/'
 
 #email stuff
@@ -156,3 +156,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'eric.r.michel@gmail.com'
 EMAIL_HOST_PASSWORD = 'hkaua34'
 EMAIL_PORT = 587
+
+#get current user in every template context
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'csm.contextprocessors.user', 'django.contrib.auth.context_processors.auth'
+)

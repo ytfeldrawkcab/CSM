@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Q
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -37,16 +37,16 @@ def selecthome(request):
         request.user.owner
         return editowner(request)
     except ObjectDoesNotExist:
-        return HttpResponseRedirect('/owners/')
+        return render_to_response('index.html', RequestContext(request, {}))
 
 #owner management
 @login_required
 def editowner(request, ownerid=None):
     try:
-        if request.user.owner and ownerid == None:
+        if request.user.owner and not ownerid:
             ownerid = request.user.owner.username
-        elif request.user.owner and ownerid != request.user.owner.username:
-            return HttpResponse("You can't view this owner's details.")
+        elif request.user.owner and ownerid:
+            return HttpResponseRedirect('/owners/')
         admin = False
     except ObjectDoesNotExist:
         admin = True
@@ -143,7 +143,10 @@ def editowner(request, ownerid=None):
                     owner.officialcontact = None
             owner.save()
             
-            return HttpResponseRedirect('/owners/' + str(owner.username) + '/edit/')
+            if admin == True:
+                return HttpResponseRedirect('/owners/' + str(owner.username) + '/edit/')
+            else:
+                return HttpResponseRedirect('/owners/')
 
 @login_required
 def addindividual(request):
@@ -152,7 +155,7 @@ def addindividual(request):
     
     return render_to_response('owners/individual.html', {'individualform':individualform})
 
-@login_required
+@user_passes_test(lambda u: u.is_staff)
 def ownersearch(request):
     querystring, searchfield = searchcriteria(request.GET)
     
@@ -166,4 +169,4 @@ def ownersearch(request):
     owners = Owner.objects.filter(query)
 
     form = OwnerSearchForm(initial={'searchfield':searchfield, 'querystring':querystring})
-    return render_to_response('owners/search.html', {'owners':owners, 'form':form})
+    return render_to_response('owners/search.html', RequestContext(request, {'owners':owners, 'form':form}))

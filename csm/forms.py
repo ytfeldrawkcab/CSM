@@ -48,7 +48,7 @@ class AutoInstanceModelForm(forms.ModelForm):
 class OwnerMasterForm(AutoInstanceModelForm):
     class Meta:
         model = Owner
-        fields = ('username','ownertype','paperless')
+        fields = ('username','ownertype','paperless','address1','address2','city','state','zipcode')
     def __init__(self, *args, **kwargs):
         super(OwnerMasterForm, self).__init__(*args, **kwargs)
         self.fields['individualcount'] = forms.IntegerField(initial=0, widget=forms.HiddenInput())
@@ -58,7 +58,7 @@ class OwnerMasterForm(AutoInstanceModelForm):
 class OwnerEditForm(AutoInstanceModelForm):
     class Meta:
         model = Owner
-        fields = ('paperless',)
+        fields = ('paperless','address1','address2','city','state','zipcode')
     def __init__(self, *args, **kwargs):
         super(OwnerEditForm, self).__init__(*args, **kwargs)
         self.fields['individualcount'] = forms.IntegerField(initial=0, widget=forms.HiddenInput())

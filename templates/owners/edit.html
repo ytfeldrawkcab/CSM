@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block content %}
-    <form class='form-stacked' method="post" action="">
+    <form method="post" action="">
     {% csrf_token %}
         <div class="page-header">
             <h1>Owner Details</h1>
@@ -36,20 +36,62 @@
                     {{ form.username }}
                 </div>
             </div>
-            <div class="clearfix">
-                <label>
-                    Ownership Type:
-                </label>
-                <div class="input">
-                    {{ form.ownertype }}
-                </div>
-            </div>
+            {% if user.username == form.username %}
             <div class="clearfix">
                 <label>Change Password:</label>
                 <div class="input">
                     <div class='inputs-list'>
                         <a href='/owners/changepassword'>click here</a> to change your password<br/>
                     </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="clearfix">
+                <label>
+                    Address 1:
+                </label>
+                <div class="input">
+                    {{ form.address1 }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>
+                    Address 2:
+                </label>
+                <div class="input">
+                    {{ form.address2 }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>
+                    City:
+                </label>
+                <div class="input">
+                    {{ form.city }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>
+                    State:
+                </label>
+                <div class="input">
+                    {{ form.state }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>
+                    Zip Code:
+                </label>
+                <div class="input">
+                    {{ form.zipcode }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>
+                    Ownership Type:
+                </label>
+                <div class="input">
+                    {{ form.ownertype }}
                 </div>
             </div>
             <div class="clearfix">
@@ -68,7 +110,7 @@
             {% for field in form.hidden_fields %}{{ field }}{% endfor %}
         </fieldset>
         <div class="page-header">
-            <h1>Individuals <input type='button' value='+' onClick='addindividual()' {% if form.maxindividuals %}disabled{% endif %}/></h1>
+            <h1>Individuals <input type='button' value='+' onClick='addindividual()' {% if form.maxindividuals and user.owner %}disabled{% endif %}/></h1>
         </div>
         <fieldset>
             {% if form.customerror %}
@@ -91,8 +133,10 @@
                 {% endfor %}
             </table>
         </fieldset>
-        <div class="actions">
-            <input type='submit' value='submit'/>
+        <div class='form-stacked'>
+            <div class="actions">
+                <input type='submit' value='submit'/>
+            </div>
         </div>
     </form>
 {% endblock %}

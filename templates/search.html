@@ -5,16 +5,18 @@
     <h1>Search</h1>
 </div>
 <form class='form-stacked' method="get" action="">
-{% for field in form %}
-    <div class="clearfix">
-        <label>
-            {{ field.label }}
-        </label>
-        <div class="input">
-            {{ field }}
+<fieldset>
+    {% for field in form %}
+        <div class="clearfix">
+            <label>
+                {{ field.label }}
+            </label>
+            <div class="input">
+                {{ field }}
+            </div>
         </div>
-    </div>
-{% endfor %}
+    {% endfor %}
+</fieldset>
 <div class="actions">
     <input type="submit" class="btn primary" value="Search">
 </div>
