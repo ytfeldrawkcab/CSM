@@ -149,6 +149,63 @@ def editowner(request, ownerid=None):
                 return HttpResponseRedirect('/owners/')
 
 @login_required
+def vote(request, electionid):
+    election = Election.objects.get(pk=electionid)
+    candidates = Candidate.objects.filter(election=election)
+    if request.method == 'GET':
+        votes = Vote.objects.filter(candidate__election=election)
+        voteforms = []
+        v = 0
+        for candidate in candidates:
+            v += 1
+            instance = None
+            selected = False
+            for vote in votes:
+                if vote.candidate == candidate:
+                    instance = vote
+                    selected = True
+                    break
+                else:
+                    instance = None
+                    selected = False
+            voteform = VoteForm(instance=instance, prefix='v'+str(v), initial={'candidate':candidate.pk, 'selected':selected})
+            voteforms.append(voteform)
+        
+        return render_to_response('elections/vote.html', RequestContext(request, {'voteforms':voteforms, 'election':election, 'candidates':candidates, 'votecount':v}))
+    
+    else:
+        passedvalidation = True
+        votecount = request.POST['votecount']
+        voteforms = []
+        
+        selectedcount = 0
+        for v in xrange(1, int(votecount)+1):
+            voteform = VoteForm(request.POST, prefix='v'+str(v))
+            voteforms.append(voteform)
+            if 'v'+str(v)+'-selected' in request.POST:
+                selectedcount += 1
+            if not voteform.is_valid():
+                passedvalidation = False
+        
+        if selectedcount > election.maxchoices:
+            passedvalidation = False
+        
+        if not passedvalidation:
+            return render_to_response('elections/vote.html', RequestContext(request, {'voteforms':voteforms, 'election':election, 'candidates':candidates, 'votecount':v}))
+            
+        else:
+            for voteform in voteforms:
+                vote = voteform.save(commit=False)
+                vote.owner = request.user.owner
+                if voteform.cleaned_data['selected']:
+                    vote.save()
+                elif vote.pk:
+                    vote.delete()
+            
+            return HttpResponseRedirect('/elections/' + str(election.pk) + '/vote/')
+               
+
+@login_required
 def addindividual(request):
     prefix = request.GET['prefix']
     individualform = IndividualForm(prefix='i'+str(prefix))

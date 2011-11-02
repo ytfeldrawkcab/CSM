@@ -40,4 +40,7 @@ urlpatterns = patterns('',
     (r'^owners/add/$', 'csm.views.editowner'),
     (r'^owners/addindividual/$', 'csm.views.addindividual'),
     (r'^owners/search/$', 'csm.views.ownersearch'),
+    
+    # Elections
+    (r'^elections/(?P<electionid>\d+)/vote/$', 'csm.views.vote'),
 )

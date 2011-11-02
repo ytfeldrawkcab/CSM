@@ -80,3 +80,13 @@ class SearchForm(forms.Form):
         
 class OwnerSearchForm(SearchForm):
     choices = [('number','Owner Number'),('contact','Official Contact')]
+
+#election forms
+class VoteForm(AutoInstanceModelForm):
+    class Meta:
+        model = Vote
+        exclude = ('owner')
+        widgets = {'candidate':forms.HiddenInput()}
+    def __init__(self, *args, **kwargs):
+        super(VoteForm, self).__init__(*args, **kwargs)
+        self.fields['selected'] = forms.BooleanField(required=False)

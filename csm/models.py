@@ -33,19 +33,18 @@ class Individual(models.Model):
     def __unicode__(self):
         return self.firstname + ' ' + self.lastname
 
-#class Election(models.Model):
-#    name = models.CharField(max_length=100)
-#    description = models.TextField()
-#    beginvoting = models.DateField()
-#    endvoting = models.DateField()
-#    maxchoices = models.IntegerField()
+class Election(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    beginvoting = models.DateField()
+    endvoting = models.DateField()
+    maxchoices = models.IntegerField()
 
-#class Candidate(models.Model):
-#    election = models.ForeignKey(Election)
-#    name = models.CharField(max_length=50)
-#    description = models.TextField()
+class Candidate(models.Model):
+    election = models.ForeignKey(Election)
+    name = models.CharField(max_length=50)
+    biography = models.TextField(blank=True)
 
-#class OwnerVote(models.Model):
-#    owner = models.ForeignKey(Owner)
-#    candidate = models.ForeignKey(Candidate)
-#    datesubmitted = models.DateField(auto_now=True)
+class Vote(models.Model):
+    owner = models.ForeignKey(Owner)
+    candidate = models.ForeignKey(Candidate)

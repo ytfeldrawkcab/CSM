@@ -11,3 +11,6 @@ class OwnerAdmin(admin.ModelAdmin):
 
 admin.site.register(Owner, OwnerAdmin)
 admin.site.register(OwnerType)
+
+admin.site.register(Election)
+admin.site.register(Candidate)
