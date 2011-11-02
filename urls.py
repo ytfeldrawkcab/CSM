@@ -42,5 +42,6 @@ urlpatterns = patterns('',
     (r'^owners/search/$', 'csm.views.ownersearch'),
     
     # Elections
-    (r'^elections/(?P<electionid>\d+)/vote/$', 'csm.views.vote'),
+    #(r'^elections/(?P<electionid>\d+)/$', 'csm.views.vote'),
+    (r'^elections/(?P<electionid>\d+)/$', 'csm.views.editelection'),
 )

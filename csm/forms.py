@@ -52,8 +52,6 @@ class OwnerMasterForm(AutoInstanceModelForm):
     def __init__(self, *args, **kwargs):
         super(OwnerMasterForm, self).__init__(*args, **kwargs)
         self.fields['individualcount'] = forms.IntegerField(initial=0, widget=forms.HiddenInput())
-        for f in self.fields:
-            self.fields[f] = auto_error_class(self.fields[f])
 
 class OwnerEditForm(AutoInstanceModelForm):
     class Meta:
@@ -62,8 +60,6 @@ class OwnerEditForm(AutoInstanceModelForm):
     def __init__(self, *args, **kwargs):
         super(OwnerEditForm, self).__init__(*args, **kwargs)
         self.fields['individualcount'] = forms.IntegerField(initial=0, widget=forms.HiddenInput())
-        for f in self.fields:
-            self.fields[f] = auto_error_class(self.fields[f])
 
 class IndividualForm(AutoInstanceModelForm):
     class Meta:
@@ -82,6 +78,20 @@ class OwnerSearchForm(SearchForm):
     choices = [('number','Owner Number'),('contact','Official Contact')]
 
 #election forms
+class ElectionForm(AutoInstanceModelForm):
+    class Meta:
+        model = Election
+        widgets = {'description':forms.Textarea(attrs={'class':'xxlarge', 'rows':'4'})}
+    def __init__(self, *args, **kwargs):
+        super(ElectionForm, self).__init__(*args, **kwargs)
+        self.fields['candidatecount'] = forms.IntegerField(initial=0, widget=forms.HiddenInput())
+
+class CandidateForm(AutoInstanceModelForm):
+    class Meta:
+        model = Candidate
+        exclude = ('election',)
+        widgets = {'biography':forms.Textarea(attrs={'class':'xxlarge', 'rows':'4'})}
+
 class VoteForm(AutoInstanceModelForm):
     class Meta:
         model = Vote

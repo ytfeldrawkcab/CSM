@@ -149,6 +149,30 @@ def editowner(request, ownerid=None):
                 return HttpResponseRedirect('/owners/')
 
 @login_required
+def addindividual(request):
+    prefix = request.GET['prefix']
+    individualform = IndividualForm(prefix='i'+str(prefix))
+    
+    return render_to_response('owners/individual.html', {'individualform':individualform})
+
+@user_passes_test(lambda u: u.is_staff)
+def ownersearch(request):
+    querystring, searchfield = searchcriteria(request.GET)
+    
+    if searchfield == 'number':
+        query = Q(username=querystring)
+    elif searchfield == 'contact':
+        query = Q(officialcontact__firstname__contains=querystring) | Q(officialcontact__lastname__contains=querystring)
+    else:
+        query = Q()
+        
+    owners = Owner.objects.filter(query)
+
+    form = OwnerSearchForm(initial={'searchfield':searchfield, 'querystring':querystring})
+    return render_to_response('owners/search.html', RequestContext(request, {'owners':owners, 'form':form}))
+
+#election management
+@login_required
 def vote(request, electionid):
     election = Election.objects.get(pk=electionid)
     candidates = Candidate.objects.filter(election=election)
@@ -202,28 +226,52 @@ def vote(request, electionid):
                 elif vote.pk:
                     vote.delete()
             
-            return HttpResponseRedirect('/elections/' + str(election.pk) + '/vote/')
-               
-
+            return HttpResponseRedirect('/elections/' + str(election.pk))
+            
 @login_required
-def addindividual(request):
-    prefix = request.GET['prefix']
-    individualform = IndividualForm(prefix='i'+str(prefix))
-    
-    return render_to_response('owners/individual.html', {'individualform':individualform})
-
-@user_passes_test(lambda u: u.is_staff)
-def ownersearch(request):
-    querystring, searchfield = searchcriteria(request.GET)
-    
-    if searchfield == 'number':
-        query = Q(username=querystring)
-    elif searchfield == 'contact':
-        query = Q(officialcontact__firstname__contains=querystring) | Q(officialcontact__lastname__contains=querystring)
-    else:
-        query = Q()
+def editelection(request, electionid=None):   
+    if request.method == 'GET':
+        if electionid:
+            election = Election.objects.get(pk=electionid)
+        else:
+            election = None
         
-    owners = Owner.objects.filter(query)
-
-    form = OwnerSearchForm(initial={'searchfield':searchfield, 'querystring':querystring})
-    return render_to_response('owners/search.html', RequestContext(request, {'owners':owners, 'form':form}))
+        candidates = Candidate.objects.filter(election=election)
+        c = 0
+        candidateforms = []
+        for candidate in candidates:
+            c += 1
+            candidateform = CandidateForm(instance=candidate, prefix='c'+str(c))
+            candidateforms.append(candidateform)
+        
+        electionform = ElectionForm(instance=election, initial={'candidatecount':c})
+        
+        return render_to_response('elections/edit.html', RequestContext(request, {'form':electionform, 'candidateforms':candidateforms}))
+    else:
+        passedvalidation = True
+        candidatecount = request.POST['candidatecount']
+        candidateforms = []
+        
+        electionform = ElectionForm(request.POST)
+                    
+        for c in xrange(1, int(candidatecount)+1):
+            candidateform = CandidateForm(request.POST, prefix='c'+str(c))
+            candidateforms.append(candidateform)
+            if not candidateform.is_valid():
+                passedvalidation = False
+            
+        if passedvalidation == False:
+            return render_to_response('elections/edit.html', RequestContext(request, {'form':electionform, 'candidateforms':candidateforms}))
+        
+        else:
+            election = electionform.save()
+            
+            for candidateform in candidateforms:
+                candidate = candidateform.save(commit=False)
+                candidate.election = election
+                if candidateform.cleaned_data['delete'] == 0:
+                    candidate.save()
+                elif candidate.pk:
+                    candidate.delete()
+            
+            return HttpResponseRedirect('/elections/' + str(election.pk))
