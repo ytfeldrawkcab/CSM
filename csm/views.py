@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime
 
 #public functions           
 def findparentinstance(parentforms, lookupprefix):
@@ -148,7 +149,7 @@ def editowner(request, ownerid=None):
             else:
                 return HttpResponseRedirect('/owners/')
 
-@login_required
+@user_passes_test(lambda u: u.is_staff)
 def addindividual(request):
     prefix = request.GET['prefix']
     individualform = IndividualForm(prefix='i'+str(prefix))
@@ -159,7 +160,7 @@ def addindividual(request):
 def ownersearch(request):
     querystring, searchfield = searchcriteria(request.GET)
     
-    if searchfield == 'number':
+    if searchfield == 'number' and querystring:
         query = Q(username=querystring)
     elif searchfield == 'contact':
         query = Q(officialcontact__firstname__contains=querystring) | Q(officialcontact__lastname__contains=querystring)
@@ -171,10 +172,53 @@ def ownersearch(request):
     form = OwnerSearchForm(initial={'searchfield':searchfield, 'querystring':querystring})
     return render_to_response('owners/search.html', RequestContext(request, {'owners':owners, 'form':form}))
 
+@user_passes_test(lambda u: u.is_staff)
+def electionsearch(request):
+    querystring, searchfield = searchcriteria(request.GET)
+    
+    if searchfield == 'name':
+        query = Q(name__contains=querystring)
+    else:
+        query = Q()
+        
+    elections = Election.objects.filter(query)
+
+    form = ElectionSearchForm(initial={'searchfield':searchfield, 'querystring':querystring})
+    return render_to_response('elections/search.html', RequestContext(request, {'elections':elections, 'form':form}))
+
+@user_passes_test(lambda u: u.is_superuser)
+def usersearch(request):
+    querystring, searchfield = searchcriteria(request.GET)
+    
+    if searchfield == 'username':
+        query = Q(username__contains=querystring)
+    elif searchfield == 'name':
+        query = Q(first_name__contains=querystring) | Q(last_name__contains=querystring)
+    else:
+        query = Q()
+        
+    users = User.objects.filter(query).filter(is_staff=True)
+
+    form = UserSearchForm(initial={'searchfield':searchfield, 'querystring':querystring})
+    return render_to_response('users/search.html', RequestContext(request, {'users':users, 'form':form}))
+
 #election management
+@login_required
+def selectelection(request, electionid):
+    try:
+        request.user.owner
+        return vote(request, electionid)
+    except ObjectDoesNotExist:
+        return editelection(request, electionid)
+
 @login_required
 def vote(request, electionid):
     election = Election.objects.get(pk=electionid)
+    print datetime.today()
+    if datetime.date(datetime.today()) < election.beginvoting:
+        return render_to_response('elections/votinghasnotbegun.html', RequestContext(request, {}))
+    elif datetime.date(datetime.today()) > election.endvoting:
+        return render_to_response('elections/votinghasended.html', RequestContext(request, {}))
     candidates = Candidate.objects.filter(election=election)
     if request.method == 'GET':
         votes = Vote.objects.filter(candidate__election=election)
@@ -193,6 +237,8 @@ def vote(request, electionid):
                     instance = None
                     selected = False
             voteform = VoteForm(instance=instance, prefix='v'+str(v), initial={'candidate':candidate.pk, 'selected':selected})
+            voteform.candidatename = candidate.name
+            voteform.candidatebio = candidate.biography
             voteforms.append(voteform)
         
         return render_to_response('elections/vote.html', RequestContext(request, {'voteforms':voteforms, 'election':election, 'candidates':candidates, 'votecount':v}))
@@ -205,17 +251,22 @@ def vote(request, electionid):
         selectedcount = 0
         for v in xrange(1, int(votecount)+1):
             voteform = VoteForm(request.POST, prefix='v'+str(v))
+            candidate = Candidate.objects.get(pk=request.POST['v'+str(v)+'-candidate'])
+            voteform.candidatename = candidate.name
+            voteform.candidatebio = candidate.biography
             voteforms.append(voteform)
             if 'v'+str(v)+'-selected' in request.POST:
                 selectedcount += 1
             if not voteform.is_valid():
                 passedvalidation = False
         
+        customerror = None
         if selectedcount > election.maxchoices:
+            customerror = "You may only vote for 3 candidates"
             passedvalidation = False
         
         if not passedvalidation:
-            return render_to_response('elections/vote.html', RequestContext(request, {'voteforms':voteforms, 'election':election, 'candidates':candidates, 'votecount':v}))
+            return render_to_response('elections/vote.html', RequestContext(request, {'voteforms':voteforms, 'election':election, 'candidates':candidates, 'votecount':v, 'customerror':customerror}))
             
         else:
             for voteform in voteforms:
@@ -228,7 +279,7 @@ def vote(request, electionid):
             
             return HttpResponseRedirect('/elections/' + str(election.pk))
             
-@login_required
+@user_passes_test(lambda u: u.is_staff)
 def editelection(request, electionid=None):   
     if request.method == 'GET':
         if electionid:
@@ -253,15 +304,23 @@ def editelection(request, electionid=None):
         candidateforms = []
         
         electionform = ElectionForm(request.POST)
-                    
+        if request.POST['pk']:
+            votes = Vote.objects.filter(candidate__election__id=request.POST['pk'])
+        else:
+            votes = None
+        
+        customerror = None
         for c in xrange(1, int(candidatecount)+1):
             candidateform = CandidateForm(request.POST, prefix='c'+str(c))
             candidateforms.append(candidateform)
+            if request.POST['c'+str(c)+'-delete'] == '1' and votes:
+                passedvalidation = False
+                customerror = 'You cannot delete a candidate after voting has begun'
             if not candidateform.is_valid():
                 passedvalidation = False
             
         if passedvalidation == False:
-            return render_to_response('elections/edit.html', RequestContext(request, {'form':electionform, 'candidateforms':candidateforms}))
+            return render_to_response('elections/edit.html', RequestContext(request, {'form':electionform, 'candidateforms':candidateforms, 'customerror':customerror}))
         
         else:
             election = electionform.save()
@@ -275,3 +334,39 @@ def editelection(request, electionid=None):
                     candidate.delete()
             
             return HttpResponseRedirect('/elections/' + str(election.pk))
+
+@user_passes_test(lambda u: u.is_staff)
+def addcandidate(request):
+    prefix = request.GET['prefix']
+    candidateform = CandidateForm(prefix='c'+str(prefix))
+    
+    return render_to_response('elections/candidate.html', {'candidateform':candidateform})
+    
+#user management
+@user_passes_test(lambda u: u.is_superuser)
+def edituser(request, userid=None):   
+    if request.method == 'GET':
+        if userid:
+            user = User.objects.get(pk=userid)
+        else:
+            user = None
+        
+        userform = UserForm(instance=user)
+        
+        return render_to_response('users/edit.html', RequestContext(request, {'form':userform}))
+    else:
+        passedvalidation = True
+        
+        userform = UserForm(request.POST)
+        if not userform.is_valid():
+            passedvalidation = False
+        
+        if passedvalidation == False:
+            return render_to_response('users/edit.html', RequestContext(request, {'form':userform}))
+        
+        else:
+            user = userform.save(commit=False)
+            user.is_staff = True
+            user.save()
+            
+        return HttpResponseRedirect('/users/' + str(user.pk))

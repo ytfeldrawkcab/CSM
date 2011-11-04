@@ -19,18 +19,20 @@
     <form class='form-stacked' method="post" action="">
     {% csrf_token %}
         <fieldset>
-            <h5>You may vote for up to {{ election.maxchoices }} candidates.</h5>
-            {% for candidate in candidates %}
+            {% if customerror %}
+                <div class="alert-message error">
+                    <p>{{ customerror }}</p>
+                </div>
+            {% else %}
+                <h5>You may vote for up to {{ election.maxchoices }} candidates.</h5>
+            {% endif %}
+            {% for voteform in voteforms %}
                 <div class="clearfix">
-                    {% for voteform in voteforms %}
-                        {% if voteform.candidate.value == candidate.pk %}
-                            <label>{{ voteform.selected }} {{ candidate.name }}</label>
-                            {% for field in voteform.hidden_fields %}{{ field }}{% endfor %}
-                        {% endif %}
-                    {% endfor %}
+                    <label>{{ voteform.selected }} {{ voteform.candidatename }}</label>
                     <div class="input">
-                        {{ candidate.biography }}
+                        {{ voteform.candidatebio }}
                     </div>
+                    {% for field in voteform.hidden_fields %}{{ field }}{% endfor %}
                 </div>
             {% endfor %}
         </fieldset>

@@ -3,10 +3,10 @@
 <html>
     <head>
 
-        <meta http-equiv="Content-Script-Type" content="application/javascript">
+        <meta http-equiv="Content-Script-Type" content="text/javascript">
 
-        <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-        <script type="application/javascript" src="/static/js/jquery.cleditor.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.cleditor.min.js"></script>
         
         <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="/static/css/jquery.cleditor.css">
@@ -17,23 +17,44 @@
     <body>
         <div class="container-fluid">
             <div class='sidebar'>
-                <h3>Menu</h3>
-                <ul>
-                    <li><a href='/owners/'>Home</a></li>
-                    <li><a href='/owners/logout'>Logout</a></li>
-                </ul>
-                {% if user.is_staff and not user.owner %}
-                    <h5>Owners</h5>
+                {% if not user.is_authenticated %}
+                    <h3><a href='/owners/login/'>Login</a></h3>
+                {% else %}
+                    <h3>Menu</h3>
                     <ul>
-                        <li><a href='/owners/search/'>Search for an owner</a></li>
-                        <li><a href='/owners/add/'>Add a New Owner</a></li>
+                        <li><a href='/owners/'>Home</a></li>
+                        <li><a href='/owners/logout'>Logout</a></li>
                     </ul>
-                    
-                    <h5>Elections</h5>
-                    <ul>
-                        <li><a href='/elections/list/'>List Elections</a></li>
-                        <li><a href='/elections/add/'>Add a New Election</a></li>
-                    </ul>
+                    {% if user.is_staff and not user.owner %}
+                        <h5>Owners</h5>
+                        <ul>
+                            <li><a href='/owners/search/'>Search for an Owner</a></li>
+                            <li><a href='/owners/add/'>Add a New Owner</a></li>
+                        </ul>
+                        
+                        {% if user.is_superuser %}
+                            <h5>Elections</h5>
+                            <ul>
+                                <li><a href='/elections/search/'>Search for an Election</a></li>
+                                <li><a href='/elections/add/'>Add a New Election</a></li>
+                            </ul>
+                            
+                            <h5>Users</h5>
+                            <ul>
+                                <li><a href='/users/search/'>Search for Users</a></li>
+                                <li><a href='/users/add/'>Add new User</a></li>
+                            </ul>
+                        {% endif %}
+                    {% else %}
+                        {% if openelections %}
+                            <h5>Open Elections</h5>
+                            <ul>
+                                {% for openelection in openelections %}
+                                    <li><a href='/elections/{{ openelection.pk }}/'>{{ openelection }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
                 {% block sidebar %}{% endblock %}
             </div>

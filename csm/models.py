@@ -39,6 +39,8 @@ class Election(models.Model):
     beginvoting = models.DateField()
     endvoting = models.DateField()
     maxchoices = models.IntegerField()
+    def __unicode__(self):
+        return self.name
 
 class Candidate(models.Model):
     election = models.ForeignKey(Election)

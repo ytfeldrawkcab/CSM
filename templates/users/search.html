@@ -1,0 +1,28 @@
+{% extends "search.html" %}
+
+{% block results %}
+{% if users %}
+  <table>
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>First<br/>Name</th>
+            <th>Last<br/>Name</th>
+            <th>Email</th>
+            <th>Superuser</th>
+        </tr>
+    </thead>
+    {% for user in users %}
+    <tr>
+        <td><a href='/users/{{ user.pk }}/edit/'>{{ user.username }}</a></td>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.is_superuser }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% else %}
+  <p>No users found</p>
+{% endif %}
+{% endblock %}

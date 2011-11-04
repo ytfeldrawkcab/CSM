@@ -77,6 +77,12 @@ class SearchForm(forms.Form):
 class OwnerSearchForm(SearchForm):
     choices = [('number','Owner Number'),('contact','Official Contact')]
 
+class ElectionSearchForm(SearchForm):
+    choices = [('name','Election Name')]
+
+class UserSearchForm(SearchForm):
+    choices = [('username','Username'),('name','First/Last Name')]
+
 #election forms
 class ElectionForm(AutoInstanceModelForm):
     class Meta:
@@ -100,3 +106,9 @@ class VoteForm(AutoInstanceModelForm):
     def __init__(self, *args, **kwargs):
         super(VoteForm, self).__init__(*args, **kwargs)
         self.fields['selected'] = forms.BooleanField(required=False)
+
+#user forms
+class UserForm(AutoInstanceModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'is_active', 'is_superuser')

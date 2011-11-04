@@ -159,5 +159,5 @@ EMAIL_PORT = 587
 
 #get current user in every template context
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'csm.contextprocessors.user', 'django.contrib.auth.context_processors.auth'
+    'csm.contextprocessors.user', 'csm.contextprocessors.openelections', 'django.contrib.auth.context_processors.auth'
 )

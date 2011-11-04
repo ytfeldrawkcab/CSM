@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block extrahead %}{{ block.super }}
-    <script type='application/javascript'>   
+    <script type='text/javascript'>   
         function addindividual(){
             var prefix = parseInt($('#id_individualcount').val()) + 1;
             $.get('/owners/addindividual/', {'prefix':prefix}, function(data){
@@ -24,11 +24,12 @@
 {% endblock %}
 
 {% block content %}
+    <div class="page-header">
+        <h1>Edit Owner</h1>
+    </div>
     <form method="post" action="">
     {% csrf_token %}
-        <div class="page-header">
-            <h1>Owner Details</h1>
-        </div>
+        <h3>Owner Details</h3>
         <fieldset>
             <div class="clearfix">
                 <label>Owner Number:</label>
@@ -109,9 +110,7 @@
             </div>
             {% for field in form.hidden_fields %}{{ field }}{% endfor %}
         </fieldset>
-        <div class="page-header">
-            <h1>Individuals <input type='button' value='+' onClick='addindividual()' {% if form.maxindividuals and user.owner %}disabled{% endif %}/></h1>
-        </div>
+        <h3>Individuals <input type='button' value='+' onClick='addindividual()' {% if form.maxindividuals and user.owner %}disabled{% endif %}/></h3>
         <fieldset>
             {% if form.customerror %}
                 <div class="alert-message error">

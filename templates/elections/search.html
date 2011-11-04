@@ -1,0 +1,26 @@
+{% extends "search.html" %}
+
+{% block results %}
+{% if elections %}
+  <table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Voting Begins</th>
+            <th>Voting Ends</th>
+        </tr>
+    </thead>
+    {% for election in elections %}
+    <tr>
+        <td><a href='/elections/{{ election.pk }}/'>{{ election.name }}</a></td>
+        <td>{{ election.description|truncatewords:30 }}</td>
+        <td>{{ election.beginvoting }}</td>
+        <td>{{ election.endvoting }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% else %}
+  <p>No elections found</p>
+{% endif %}
+{% endblock %}

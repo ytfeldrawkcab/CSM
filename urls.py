@@ -26,7 +26,6 @@ urlpatterns = patterns('',
     # Authentication
     (r'^owners/login/$', 'django.contrib.auth.views.login'),
     (r'^owners/logout/$', 'django.contrib.auth.views.logout'),
-    #(r'^owners/setpassword/$', 'django.contrib.auth.views.password_change', {'password_change_form':SetPasswordForm, 'template_name':'registration/password_set_form.html'}),
     (r'^owners/changepassword/$', 'django.contrib.auth.views.password_change'),
     (r'^owners/changepassworddone/$', 'django.contrib.auth.views.password_change_done'),
     (r'^owners/resetpassword/$', 'django.contrib.auth.views.password_reset', {'is_admin_site':False}),
@@ -42,6 +41,13 @@ urlpatterns = patterns('',
     (r'^owners/search/$', 'csm.views.ownersearch'),
     
     # Elections
-    #(r'^elections/(?P<electionid>\d+)/$', 'csm.views.vote'),
-    (r'^elections/(?P<electionid>\d+)/$', 'csm.views.editelection'),
+    (r'^elections/(?P<electionid>\d+)/$', 'csm.views.selectelection'),
+    (r'^elections/add/$', 'csm.views.editelection'),
+    (r'^elections/addcandidate/$', 'csm.views.addcandidate'),
+    (r'^elections/search/$', 'csm.views.electionsearch'),
+    
+    # Users
+    (r'^users/(?P<userid>\d+)/edit/$', 'csm.views.edituser'),
+    (r'^users/add/$', 'csm.views.edituser'),
+    (r'^users/search/$', 'csm.views.usersearch'),
 )

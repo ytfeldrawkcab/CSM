@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block extrahead %}{{ block.super }}
+    <script type='text/javascript'>   
+
+    </script>
+    
+    <style type='text/css'>
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Edit User</h1>
+    </div>
+    <form method="post" action="">
+    {% csrf_token %}
+        <h3>User Details</h3>
+        <fieldset>
+            <div class="clearfix">
+                <label>Username:</label>
+                <div class="input">
+                    {{ form.username }}
+                </div>
+            </div>
+            {% if user.username == form.username.value %}
+                <div class="clearfix">
+                    <label>Change Password:</label>
+                    <div class="input">
+                        <div class='inputs-list'>
+                            <a href='/owners/changepassword'>click here</a> to change your password<br/>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="clearfix">
+                <label>First Name:</label>
+                <div class="input">
+                    {{ form.first_name }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>Last Name:</label>
+                <div class="input">
+                    {{ form.last_name }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>Email:</label>
+                <div class="input">
+                    {{ form.email }}
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>Active:</label>
+                <div class="input">
+                    <ul class="inputs-list">
+                        <li>
+                          <label>
+                            {{ form.is_active }}
+                            <span>Uncheck to deactivate account (rather than deleting)</span>
+                          </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="clearfix">
+                <label>Superuser:</label>
+                <div class="input">
+                    <ul class="inputs-list">
+                        <li>
+                          <label>
+                            {{ form.is_superuser }}
+                            <span>Can create/edit users and elections</span>
+                          </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+        </fieldset>
+
+        <div class='form-stacked'>
+            <div class="actions">
+                <input type='submit' value='submit'/>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block sidebar %}
+
+{% endblock %}
