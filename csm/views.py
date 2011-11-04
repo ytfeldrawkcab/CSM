@@ -103,10 +103,13 @@ def editowner(request, ownerid=None):
             ownerform.officialcontactprefix = request.POST['officialcontactprefix']
         if not ownerform.is_valid():
             passedvalidation = False
-            
+        
+        savedindividuals = 0
         for i in xrange(1, int(individualcount)+1):
             individualform = IndividualForm(request.POST, prefix='i'+str(i))
             individualforms.append(individualform)
+            if request.POST['i'+str(i)+'-delete'] == 0:
+                savedinvididuals += 1
             if not individualform.is_valid():
                 passedvalidation = False
         
@@ -115,7 +118,7 @@ def editowner(request, ownerid=None):
         if admin == False:
             ownertype = owner.ownertype.pk
             
-        if int(individualcount) > 1 and str(ownertype) == str(2):
+        if savedindividuals > 1 and str(ownertype) == str(2):
             passedvalidation = False
             ownerform.customerror = "An individual owner share can only have one individual associated with the account"
             
