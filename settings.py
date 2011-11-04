@@ -153,8 +153,8 @@ LOGOUT_REDIRECT_URL = '/'
 #email stuff
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'eric.r.michel@gmail.com'
-EMAIL_HOST_PASSWORD = 'hkaua34'
+EMAIL_HOST_USER = 'no-reply@companyshopsmarket.coop'
+EMAIL_HOST_PASSWORD = 'L0calpe0ple42'
 EMAIL_PORT = 587
 
 #get current user in every template context
