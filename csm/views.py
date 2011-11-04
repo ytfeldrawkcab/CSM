@@ -4,7 +4,7 @@ from csm.forms import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
@@ -67,7 +67,10 @@ def editowner(request, ownerid=None):
             individualforms.append(individualform)
         
         if admin == True:
-            ownerform = OwnerMasterForm(instance=owner, initial={'individualcount':i})
+            if not owner:
+                ascendingowners = Owner.objects.extra(select={'ownerid': 'CAST(username AS INTEGER)'}).order_by('-ownerid')
+                ownerid = int(ascendingowners[0].username) + 1
+            ownerform = OwnerMasterForm(instance=owner, initial={'individualcount':i,'username':ownerid})
         else:
             ownerform = OwnerEditForm(instance=owner, initial={'individualcount':i})
             ownerform.username = owner.username
@@ -102,6 +105,7 @@ def editowner(request, ownerid=None):
         if 'officialcontactprefix' in request.POST:
             ownerform.officialcontactprefix = request.POST['officialcontactprefix']
         if not ownerform.is_valid():
+            print ownerform
             passedvalidation = False
         
         savedindividuals = 0
