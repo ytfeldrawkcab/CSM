@@ -35,14 +35,14 @@
                         {% if user.is_superuser %}
                             <h5>Elections</h5>
                             <ul>
-                                <li><a href='/elections/search/'>Search for an Election</a></li>
-                                <li><a href='/elections/add/'>Add a New Election</a></li>
+                                <li><a href='/owners/elections/search/'>Search for an Election</a></li>
+                                <li><a href='/owners/elections/add/'>Add a New Election</a></li>
                             </ul>
                             
                             <h5>Users</h5>
                             <ul>
-                                <li><a href='/users/search/'>Search for Users</a></li>
-                                <li><a href='/users/add/'>Add new User</a></li>
+                                <li><a href='/owners/users/search/'>Search for Users</a></li>
+                                <li><a href='/owners/users/add/'>Add new User</a></li>
                             </ul>
                         {% endif %}
                     {% else %}
@@ -50,7 +50,7 @@
                             <h5>Open Elections</h5>
                             <ul>
                                 {% for openelection in openelections %}
-                                    <li><a href='/elections/{{ openelection.pk }}/'>{{ openelection }}</a></li>
+                                    <li><a href='/owners/elections/{{ openelection.pk }}/'>{{ openelection }}</a></li>
                                 {% endfor %}
                             </ul>
                         {% endif %}
