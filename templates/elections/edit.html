@@ -4,7 +4,7 @@
     <script type='text/javascript'>   
         function addcandidate(){
             var prefix = parseInt($('#id_candidatecount').val()) + 1;
-            $.get('/elections/addcandidate/', {'prefix':prefix}, function(data){
+            $.get('/owners/elections/addcandidate/', {'prefix':prefix}, function(data){
                 $('#candidates').append(data);
                 $('#id_candidatecount').val(prefix);
             });
