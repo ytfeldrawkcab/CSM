@@ -69,8 +69,11 @@ def editowner(request, ownerid=None):
         if admin == True:
             if not owner:
                 ownerlist = list(Owner.objects.all())
-                maxowner = max(ownerlist, key=lambda owner: int(owner.username))
-                ownerid = int(maxowner.username) + 1
+                if ownerlist:
+                    maxowner = max(ownerlist, key=lambda owner: int(owner.username))
+                    ownerid = int(maxowner.username) + 1
+                else:
+                    ownerid = 1
             ownerform = OwnerMasterForm(instance=owner, initial={'individualcount':i,'username':ownerid})
         else:
             ownerform = OwnerEditForm(instance=owner, initial={'individualcount':i})
