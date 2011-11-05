@@ -13,7 +13,7 @@
     </thead>
     {% for election in elections %}
     <tr>
-        <td><a href='/elections/{{ election.pk }}/'>{{ election.name }}</a></td>
+        <td><a href='/owners/elections/{{ election.pk }}/'>{{ election.name }}</a></td>
         <td>{{ election.description|truncatewords:30 }}</td>
         <td>{{ election.beginvoting }}</td>
         <td>{{ election.endvoting }}</td>

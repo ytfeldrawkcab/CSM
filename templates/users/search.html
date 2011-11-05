@@ -14,7 +14,7 @@
     </thead>
     {% for user in users %}
     <tr>
-        <td><a href='/users/{{ user.pk }}/edit/'>{{ user.username }}</a></td>
+        <td><a href='/owners/users/{{ user.pk }}/edit/'>{{ user.username }}</a></td>
         <td>{{ user.first_name }}</td>
         <td>{{ user.last_name }}</td>
         <td>{{ user.email }}</td>

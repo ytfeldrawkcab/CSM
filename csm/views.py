@@ -285,7 +285,7 @@ def vote(request, electionid):
                 elif vote.pk:
                     vote.delete()
             
-            return HttpResponseRedirect('/elections/' + str(election.pk))
+            return HttpResponseRedirect('/owners/elections/' + str(election.pk))
             
 @user_passes_test(lambda u: u.is_staff)
 def editelection(request, electionid=None):   
@@ -341,7 +341,7 @@ def editelection(request, electionid=None):
                 elif candidate.pk:
                     candidate.delete()
             
-            return HttpResponseRedirect('/elections/' + str(election.pk))
+            return HttpResponseRedirect('/owners/elections/' + str(election.pk))
 
 @user_passes_test(lambda u: u.is_staff)
 def addcandidate(request):
@@ -377,4 +377,4 @@ def edituser(request, userid=None):
             user.is_staff = True
             user.save()
             
-        return HttpResponseRedirect('/users/' + str(user.pk))
+        return HttpResponseRedirect('/owners/users/' + str(user.pk) + '/edit/')
