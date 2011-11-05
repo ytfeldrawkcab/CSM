@@ -68,8 +68,9 @@ def editowner(request, ownerid=None):
         
         if admin == True:
             if not owner:
-                ascendingowners = Owner.objects.extra(select={'ownerid': 'CAST(username AS INTEGER)'}).order_by('-ownerid')
-                ownerid = int(ascendingowners[0].username) + 1
+                ownerlist = list(Owner.objects.all())
+                maxowner = max(ownerlist, key=lambda owner: int(owner.username))
+                ownerid = int(maxowner.username) + 1
             ownerform = OwnerMasterForm(instance=owner, initial={'individualcount':i,'username':ownerid})
         else:
             ownerform = OwnerEditForm(instance=owner, initial={'individualcount':i})
@@ -90,7 +91,6 @@ def editowner(request, ownerid=None):
         try:
             request.user.owner
             admin = False
-            print 'test'
         except ObjectDoesNotExist:
             admin = True
         
@@ -105,7 +105,6 @@ def editowner(request, ownerid=None):
         if 'officialcontactprefix' in request.POST:
             ownerform.officialcontactprefix = request.POST['officialcontactprefix']
         if not ownerform.is_valid():
-            print ownerform
             passedvalidation = False
         
         savedindividuals = 0
@@ -221,7 +220,6 @@ def selectelection(request, electionid):
 @login_required
 def vote(request, electionid):
     election = Election.objects.get(pk=electionid)
-    print datetime.today()
     if datetime.date(datetime.today()) < election.beginvoting:
         return render_to_response('elections/votinghasnotbegun.html', RequestContext(request, {}))
     elif datetime.date(datetime.today()) > election.endvoting:
