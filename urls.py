@@ -24,21 +24,21 @@ urlpatterns = patterns('',
     # Static Pages
     
     # Authentication
-    (r'^owners/login/$', 'django.contrib.auth.views.login'),
-    (r'^owners/logout/$', 'django.contrib.auth.views.logout'),
-    (r'^owners/changepassword/$', 'django.contrib.auth.views.password_change'),
-    (r'^owners/changepassworddone/$', 'django.contrib.auth.views.password_change_done'),
-    (r'^owners/resetpassword/$', 'django.contrib.auth.views.password_reset', {'is_admin_site':False}),
-    (r'^owners/resetpassworddone/$', 'django.contrib.auth.views.password_reset_done'),
-    (r'^owners/resetpasswordcomplete/$', 'django.contrib.auth.views.password_reset_complete'),
-    (r'^owners/resetpasswordconfirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm'),
+    (r'^login/$', 'django.contrib.auth.views.login'),
+    (r'^logout/$', 'django.contrib.auth.views.logout'),
+    (r'^changepassword/$', 'django.contrib.auth.views.password_change'),
+    (r'^changepassworddone/$', 'django.contrib.auth.views.password_change_done'),
+    (r'^resetpassword/$', 'django.contrib.auth.views.password_reset', {'is_admin_site':False}),
+    (r'^resetpassworddone/$', 'django.contrib.auth.views.password_reset_done'),
+    (r'^resetpasswordcomplete/$', 'django.contrib.auth.views.password_reset_complete'),
+    (r'^resetpasswordconfirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm'),
 
     # Owners
-    (r'^owners/$', 'csm.views.selecthome'),
-    (r'^owners/(?P<ownerid>\d+)/edit/$', 'csm.views.editowner'),
-    (r'^owners/add/$', 'csm.views.editowner'),
-    (r'^owners/addindividual/$', 'csm.views.addindividual'),
-    (r'^owners/search/$', 'csm.views.ownersearch'),
+    (r'^$', 'csm.views.selecthome'),
+    (r'^(?P<ownerid>\d+)/edit/$', 'csm.views.editowner'),
+    (r'^add/$', 'csm.views.editowner'),
+    (r'^addindividual/$', 'csm.views.addindividual'),
+    (r'^search/$', 'csm.views.ownersearch'),
     
     # Elections
     (r'^elections/(?P<electionid>\d+)/$', 'csm.views.selectelection'),
