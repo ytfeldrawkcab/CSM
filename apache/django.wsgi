@@ -6,6 +6,6 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'owners.settings'
 import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()
 
-path = '/srv/django/owners'
+path = '/srv/django'
 if path not in sys.path:
     sys.path.append(path)
