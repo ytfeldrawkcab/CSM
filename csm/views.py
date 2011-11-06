@@ -172,7 +172,7 @@ def ownersearch(request):
     if searchfield == 'number' and querystring:
         query = Q(username=querystring)
     elif searchfield == 'contact':
-        query = Q(officialcontact__firstname__contains=querystring) | Q(officialcontact__lastname__contains=querystring)
+        query = Q(officialcontact__firstname__icontains=querystring) | Q(officialcontact__lastname__icontains=querystring)
     else:
         query = Q()
         
@@ -186,7 +186,7 @@ def electionsearch(request):
     querystring, searchfield = searchcriteria(request.GET)
     
     if searchfield == 'name':
-        query = Q(name__contains=querystring)
+        query = Q(name__icontains=querystring)
     else:
         query = Q()
         
@@ -200,9 +200,9 @@ def usersearch(request):
     querystring, searchfield = searchcriteria(request.GET)
     
     if searchfield == 'username':
-        query = Q(username__contains=querystring)
+        query = Q(username__icontains=querystring)
     elif searchfield == 'name':
-        query = Q(first_name__contains=querystring) | Q(last_name__contains=querystring)
+        query = Q(first_name__icontains=querystring) | Q(last_name__icontains=querystring)
     else:
         query = Q()
         
