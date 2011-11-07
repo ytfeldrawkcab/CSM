@@ -158,7 +158,7 @@ def editowner(request, ownerid=None):
             else:
                 return HttpResponseRedirect('/owners/')
 
-@user_passes_test(lambda u: u.is_staff)
+@login_required
 def addindividual(request):
     prefix = request.GET['prefix']
     individualform = IndividualForm(prefix='i'+str(prefix))
