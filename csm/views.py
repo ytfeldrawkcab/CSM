@@ -129,7 +129,8 @@ def editowner(request, ownerid=None):
             ownerform.customerror = "An individual owner share can only have one individual associated with the account"
             
         if passedvalidation == False:
-            return render_to_response('owners/edit.html', RequestContext(request, {'form':ownerform, 'individualforms':individualforms}))
+            alert = "Save Failed, See Errors Below"
+            return render_to_response('owners/edit.html', RequestContext(request, {'form':ownerform, 'individualforms':individualforms, 'alert':alert, 'alerttype':'error'}))
         
         else:
             owner = ownerform.save()
@@ -153,10 +154,8 @@ def editowner(request, ownerid=None):
                     owner.officialcontact = None
             owner.save()
             
-            if admin == True:
-                return HttpResponseRedirect('/owners/' + str(owner.username) + '/edit/')
-            else:
-                return HttpResponseRedirect('/owners/')
+            alert = "Save Successful"
+            return render_to_response('owners/edit.html', RequestContext(request, {'form':ownerform, 'individualforms':individualforms, 'alert':alert, 'alerttype':'success'}))
 
 @login_required
 def addindividual(request):

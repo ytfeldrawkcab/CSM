@@ -50,3 +50,4 @@ class Candidate(models.Model):
 class Vote(models.Model):
     owner = models.ForeignKey(Owner)
     candidate = models.ForeignKey(Candidate)
+    datesubmitted = models.DateField(auto_now_add=True)

@@ -28,13 +28,20 @@
         <h1>Edit Owner</h1>
     </div>
     <form method="post" action="">
+    {% if alert %}
+        <div class="alert-message {{ alerttype }}">
+            <p>{{ alert }}</p>
+        </div>    
+    {% endif %}
     {% csrf_token %}
         <h3>Owner Details</h3>
+        <div>Required field marked with *</div>
         <fieldset>
             <div class="clearfix">
-                <label>Owner Number:</label>
+                <label>*Owner Number:</label>
                 <div class="input">
                     {{ form.username }}
+                    {{ form.username.errors }}
                 </div>
             </div>
             {% if user.username == form.username %}
@@ -49,7 +56,7 @@
             {% endif %}
             <div class="clearfix">
                 <label>
-                    Address 1:
+                    *Address 1:
                 </label>
                 <div class="input">
                     {{ form.address1 }}
@@ -65,7 +72,7 @@
             </div>
             <div class="clearfix">
                 <label>
-                    City:
+                    *City:
                 </label>
                 <div class="input">
                     {{ form.city }}
@@ -73,7 +80,7 @@
             </div>
             <div class="clearfix">
                 <label>
-                    State:
+                    *State:
                 </label>
                 <div class="input">
                     {{ form.state }}
@@ -81,7 +88,7 @@
             </div>
             <div class="clearfix">
                 <label>
-                    Zip Code:
+                    *Zip Code:
                 </label>
                 <div class="input">
                     {{ form.zipcode }}
@@ -89,7 +96,7 @@
             </div>
             <div class="clearfix">
                 <label>
-                    Ownership Type:
+                    *Ownership Type:
                 </label>
                 <div class="input">
                     {{ form.ownertype }}

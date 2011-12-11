@@ -30,7 +30,9 @@
                 <div class="clearfix">
                     <label>{{ voteform.selected }} {{ voteform.candidatename }}</label>
                     <div class="input">
-                        {{ voteform.candidatebio }}
+                        {% autoescape off %}
+                            {{ voteform.candidatebio }}
+                        {% endautoescape %}
                     </div>
                     {% for field in voteform.hidden_fields %}{{ field }}{% endfor %}
                 </div>
