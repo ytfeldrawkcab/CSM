@@ -17,6 +17,11 @@
     <h3>{{ election.name }}</h3>
     <p>{{ election.description }}</p>
     <form class='form-stacked' method="post" action="">
+    {% if alert %}
+        <div class="alert-message {{ alerttype }}">
+            <p>{{ alert }}</p>
+        </div>    
+    {% endif %}
     {% csrf_token %}
         <fieldset>
             {% if customerror %}

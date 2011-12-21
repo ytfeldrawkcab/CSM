@@ -228,7 +228,7 @@ def vote(request, electionid):
         return render_to_response('elections/votinghasended.html', RequestContext(request, {}))
     candidates = Candidate.objects.filter(election=election)
     if request.method == 'GET':
-        votes = Vote.objects.filter(candidate__election=election)
+        votes = Vote.objects.filter(candidate__election=election).filter(owner=request.user)
         voteforms = []
         v = 0
         for candidate in candidates:
@@ -284,7 +284,8 @@ def vote(request, electionid):
                 elif vote.pk:
                     vote.delete()
             
-            return HttpResponseRedirect('/owners/elections/' + str(election.pk))
+            alert = "Vote successful - you may revisit this page at any time before voting ends to change your vote."
+            return render_to_response('elections/vote.html', RequestContext(request, {'voteforms':voteforms, 'election':election, 'candidates':candidates, 'votecount':v, 'alert':alert}))
             
 @user_passes_test(lambda u: u.is_staff)
 def editelection(request, electionid=None):   
